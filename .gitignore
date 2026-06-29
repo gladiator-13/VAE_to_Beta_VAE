@@ -1,0 +1,20 @@
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# VS Code
+.vscode/
+
+# Outputs
+outputs/
+
+# W&B
+wandb/
+
+# OS
+.DS_Store
+Thumbs.db
