@@ -21,9 +21,26 @@ class VAE(nn.Module):
         )
 
         #Decoder
-        self.decode = nn.Sequential(
+        self.decoder = nn.Sequential(
             nn.Linear(config.latent_dim, config.hidden_dim),
             get_activation(config.activation),
             nn.Linear(config.hidden_dim, input_dim),
             nn.Unflatten(1, config.input_shape)
         )
+
+    def encode(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        "Encoding the inputs into latent representations."
+        encoder_output = self.encoder(x)
+
+        mu, log_var = torch.chunk(
+            encoder_output,
+            chunks=2,
+            dim=-1
+        )
+
+        return mu, log_var
+    
+    def decode(self, z:torch.Tensor) -> torch.Tensor:
+        "Decode latent vectors into reconstruction logits."
+        return self.decoder(z)
+    
