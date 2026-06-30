@@ -70,6 +70,6 @@ class VAE(nn.Module):
             x_logits=x_logits,
             z=z,
             mu=mu,
-            std=std,
+            log_var=log_var,
             x_recon=torch.sigmoid(x_logits) if reconstruct else None,
         )

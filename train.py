@@ -4,6 +4,8 @@ from configs.model import VAEConfig
 from data.mnist import MNISTDataModule
 from models.vae import VAE
 
+from training.losses import vae_loss
+
 # Create configs
 dataset_config = DatasetConfig()
 model_config = VAEConfig()
@@ -24,8 +26,19 @@ images, labels = next(iter(train_loader))
 output = model(images)
 
 # Verify shapes
-print(images.shape)
-print(output.mu.shape)
-print(output.std.shape)
-print(output.z.shape)
-print(output.x_logits.shape)
+# print(images.shape)
+# print(output.mu.shape)
+# print(output.std.shape)
+# print(output.z.shape)
+# print(output.x_logits.shape)
+
+total, recon, kl = vae_loss(
+    output.x_logits,
+    images,
+    output.mu,
+    output.log_var,
+)
+
+print(total)
+print(recon)
+print(kl)

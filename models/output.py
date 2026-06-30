@@ -6,7 +6,7 @@ class VAEOutput:
     x_logits: torch.Tensor
     z: torch.Tensor
     mu: torch.Tensor
-    std: torch.Tensor
+    log_var: torch.Tensor
     x_recon: torch.Tensor | None = None
     loss: torch.Tensor | None = None
     loss_recon: torch.Tensor | None = None
