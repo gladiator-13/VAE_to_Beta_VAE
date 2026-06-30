@@ -8,3 +8,4 @@ class DatasetConfig:
     num_workers: int = 0 # Number of subprocesses for loading data
     pin_memory: bool = False # Faster CPU → GPU transfer (useful with CUDA)
     download: bool = True
+    normalize: bool = False
