@@ -44,3 +44,32 @@ class VAE(nn.Module):
         "Decode latent vectors into reconstruction logits."
         return self.decoder(z)
     
+    def _logvar_to_std(self, log_var: torch.Tensor) -> torch.Tensor:
+        "Convert log variance to standard deviation"
+        return torch.exp(0.5 * log_var)
+    
+    def reparameterization(self, mu:torch.Tensor, std:torch.Tensor) -> torch.Tensor:
+        "Sample latent vectors using the reparameterization trick."
+        epsilon = torch.randn_like(std)
+        return mu+std*epsilon
+    
+    def forward(self, x:torch.Tensor, reconstruct: bool=False) -> VAEOutput:
+        #Encoder input
+        mu, log_var = self.encode(x)
+
+        #Compute Standard deviation 
+        std = self._logvar_to_std(log_var)
+
+        #Sample latent vector
+        z = self.reparameterization(mu, std)
+
+        #decode
+        x_logits = self.decode(z)
+
+        return VAEOutput(
+            x_logits=x_logits,
+            z=z,
+            mu=mu,
+            std=std,
+            x_recon=torch.sigmoid(x_logits) if reconstruct else None,
+        )

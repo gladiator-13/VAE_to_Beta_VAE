@@ -1,18 +1,31 @@
+from configs.dataset import DatasetConfig
 from configs.model import VAEConfig
+
+from data.mnist import MNISTDataModule
 from models.vae import VAE
-import torch
 
-config = VAEConfig()
+# Create configs
+dataset_config = DatasetConfig()
+model_config = VAEConfig()
 
-model = VAE(config)
+# Create data module
+data_module = MNISTDataModule(dataset_config)
 
-x = torch.randn(8, 1, 28, 28)
+# Get train loader
+train_loader = data_module.train_dataloader()
 
-mu, logvar = model.encode(x)
-print(mu.shape)
-print(logvar.shape)
+# Create model
+model = VAE(model_config)
 
-z = torch.randn([8, 2])
-x_logits = model.decode(z)
+# Get one batch
+images, labels = next(iter(train_loader))
 
-print(x_logits.shape)
+# Forward pass
+output = model(images)
+
+# Verify shapes
+print(images.shape)
+print(output.mu.shape)
+print(output.std.shape)
+print(output.z.shape)
+print(output.x_logits.shape)
