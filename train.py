@@ -38,6 +38,6 @@ trainer = Trainer(
     config=training_config
 )
 
-metrics = trainer.train_epoch()
+metrics = trainer.train()
 
 print(metrics)

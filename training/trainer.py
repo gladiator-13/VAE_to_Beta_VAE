@@ -59,3 +59,14 @@ class Trainer:
             "reconstruction": total_recon / num_batches,
             "kl": total_kl / num_batches
         }
+    
+    def train(self):
+        for epoch in range(self.config.epochs):
+            metrics = self.train_epoch()
+
+            print(
+                f"Epoch: {epoch+1}/{self.config.epochs}"
+                f"Loss: {metrics['loss']:.4f}"
+                f"Recon: {metrics['reconstruction']:.4f}"
+                f"Kl: {metrics['kl']:.4f}"
+            )
