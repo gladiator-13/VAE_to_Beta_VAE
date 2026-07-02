@@ -1,3 +1,5 @@
+import torch
+
 from configs.dataset import DatasetConfig
 from configs.model import VAEConfig
 
@@ -12,7 +14,6 @@ from configs.training import TrainingConfig
 from configs.wandb import WandBConfig
 from utils.logger import WandBLogger
 from dataclasses import asdict
-
 
 def main():
     # Create configs

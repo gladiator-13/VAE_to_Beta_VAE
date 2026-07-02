@@ -1,7 +1,9 @@
 import torch
 from configs.training import TrainingConfig
 from training.losses import vae_loss
-
+from visualization.reconstruction import plot_reconstructions
+import matplotlib.pyplot as plt
+from training.checkpoints import CheckpointManager
 
 class Trainer:
     def __init__(self, model, train_loader, test_loader, config: TrainingConfig, logger) -> None:
@@ -22,6 +24,9 @@ class Trainer:
             lr=config.learning_rate,
             weight_decay=config.weight_decay
         )
+
+        self.best_val_loss = float("inf")
+        self.checkpoint_manager = CheckpointManager(self.config)
 
     def train_epoch(self):
         self.model.train()
@@ -98,6 +103,16 @@ class Trainer:
             train_metrics = self.train_epoch()
             val_metrics = self.validate()
 
+            if val_metrics["loss"] < self.best_val_loss:
+                self.best_val_loss = val_metrics["loss"]
+
+                self.checkpoint_manager.save(
+                    model=self.model,
+                    optimizer=self.optimizer,
+                    epoch=epoch,
+                    val_loss=self.best_val_loss,
+                )
+
             self.logger.log_metrics(
                 {
                     "train/loss": train_metrics["loss"],
@@ -110,6 +125,19 @@ class Trainer:
                 },
                 step=epoch,
             )
+
+            if (epoch + 1) % self.config.image_log_frequency == 0:
+                fig = plot_reconstructions(
+                    model=self.model,
+                    dataloader=self.test_loader,
+                    device=self.device,
+                )
+
+                self.logger.log_figure(
+                    figure=fig,
+                    name="reconstructions",
+                    step=epoch,
+                )
 
             print(
                 f"Epoch {epoch + 1}/{self.config.epochs} | "
