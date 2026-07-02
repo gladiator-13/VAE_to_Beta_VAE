@@ -9,35 +9,53 @@ from training.trainer import Trainer
 
 from configs.training import TrainingConfig
 
-# Create configs
-dataset_config = DatasetConfig()
-model_config = VAEConfig()
+from configs.wandb import WandBConfig
+from utils.logger import WandBLogger
+from dataclasses import asdict
 
-# Create data module
-data_module = MNISTDataModule(dataset_config)
 
-# Get train_loader and test_loader
-train_loader = data_module.train_dataloader()
-test_loader = data_module.test_dataloader()
+def main():
+    # Create configs
+    dataset_config = DatasetConfig()
+    model_config = VAEConfig()
+    training_config = TrainingConfig()
+    wandb_config = WandBConfig()
 
-# Create model
-model = VAE(model_config)
+    experiment_config = {
+        **asdict(dataset_config),
+        **asdict(model_config),
+        **asdict(training_config),
+    }
 
-# Get one batch
-images, labels = next(iter(train_loader))
+    # Create data module
+    data_module = MNISTDataModule(dataset_config)
 
-# Forward pass
-output = model(images)
+    # Get train_loader and test_loader
+    train_loader = data_module.train_dataloader()
+    test_loader = data_module.test_dataloader()
 
-training_config = TrainingConfig()
+    #Create the logger
+    logger = WandBLogger(
+        config=wandb_config,
+        experiment_config=experiment_config,
+    )
 
-trainer = Trainer(
-    model=model,
-    train_loader=train_loader,
-    test_loader=test_loader,
-    config=training_config
-)
+    # Create model
+    model = VAE(model_config)
 
-metrics = trainer.train()
+    logger.watch_model(model)
 
-print(metrics)
+    trainer = Trainer(
+        model=model,
+        train_loader=train_loader,
+        test_loader=test_loader,
+        config=training_config,
+        logger=logger
+    )
+
+    trainer.train()
+
+    logger.finish()
+
+if __name__ == "__main__":
+    main()
