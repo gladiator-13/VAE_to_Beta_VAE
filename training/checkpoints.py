@@ -1,21 +1,27 @@
 from pathlib import Path
 import torch
 from configs.training import TrainingConfig
-
+from configs.model import VAEConfig
 
 class CheckpointManager:
     """Handles saving and loading model checkpoints."""
 
-    def __init__(self, config: TrainingConfig):
-        self.config = config
+    def __init__(self, training_config: TrainingConfig, model_config: VAEConfig):
+        self.training_config = training_config
+        self.model_config = model_config
 
-        self.checkpoint_dir = Path(config.checkpoint_dir)
+        self.checkpoint_dir = Path(training_config.checkpoint_dir)
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     @property
     def checkpoint_path(self) -> Path:
         """Full path to the checkpoint file."""
-        return self.checkpoint_dir / self.config.checkpoint_name
+        filename = (
+            f"best_model_latent{self.model_config.latent_dim}.pt")
+            # f"_beta{self.training_config.beta}.pt"
+        # )
+        return self.checkpoint_dir / filename
+        
 
     def save(
         self,
@@ -41,12 +47,13 @@ class CheckpointManager:
         self,
         model,
         optimizer=None,
+        device="cpu"
     ) -> dict:
         """Load a training checkpoint."""
 
         checkpoint = torch.load(
             self.checkpoint_path,
-            map_location="cpu",
+            map_location=device,
         )
 
         model.load_state_dict(checkpoint["model_state_dict"])

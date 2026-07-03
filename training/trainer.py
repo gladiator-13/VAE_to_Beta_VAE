@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from training.checkpoints import CheckpointManager
 
 class Trainer:
-    def __init__(self, model, train_loader, test_loader, config: TrainingConfig, logger) -> None:
+    def __init__(self, model, train_loader, test_loader, config: TrainingConfig, logger, evaluator) -> None:
         self.model=model
         self.train_loader=train_loader
         self.test_loader=test_loader
@@ -27,6 +27,7 @@ class Trainer:
 
         self.best_val_loss = float("inf")
         self.checkpoint_manager = CheckpointManager(self.config)
+        self.evaluator=evaluator,
 
     def train_epoch(self):
         self.model.train()
@@ -127,16 +128,11 @@ class Trainer:
             )
 
             if (epoch + 1) % self.config.image_log_frequency == 0:
-                fig = plot_reconstructions(
+                self.evaluator.evaluate(
                     model=self.model,
                     dataloader=self.test_loader,
                     device=self.device,
-                )
-
-                self.logger.log_figure(
-                    figure=fig,
-                    name="reconstructions",
-                    step=epoch,
+                    epoch=epoch,
                 )
 
             print(
