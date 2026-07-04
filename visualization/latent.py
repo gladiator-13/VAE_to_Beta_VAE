@@ -30,8 +30,8 @@ def plot_latent_space(model, dataloader, device):
     )
 
     ax.set_title("Latent Space")
-    ax.set_xlabel("Latent Dimnesion 1")
-    ax.set_ylabel("Latent Dimnesion 2")
+    ax.set_xlabel("Latent Dimension 1")
+    ax.set_ylabel("Latent Dimension 2")
 
     plt.colorbar(scatter, ax=ax, label="Digit")
 

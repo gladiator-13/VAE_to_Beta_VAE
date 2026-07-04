@@ -59,7 +59,19 @@ dim 20 → 32 :   -3.68 val recon  (marginal)
 
 ## Visualizations
 
-All visualizations are logged directly to Weights & Biases during training — no local plot folders needed.
+All visualizations are logged directly to Weights & Biases during training.
+
+**Validation Reconstruction Loss across runs:**
+![Val Reconstruction](outputs/images/val_recon.png)
+
+**Validation KL Divergence across runs:**
+![Val KL](outputs/images/val_kl.png)
+
+**Validation Loss across runs:**
+![Val KL](outputs/images/val_loss.png)
+
+**2D Latent Space Visualization (latent_dim = 2, β = 1.0)**
+![Latent Space](outputs/images/latent_space.png)
 
 ### Latent Space — With vs Without KL Regularization (latent_dim = 2)
 
@@ -113,7 +125,8 @@ BETA_VAE_MNIST/
 │   └── vae.py                 # VAE architecture
 │
 ├── outputs/
-│   └── checkpoints/           # Best model checkpoints per run
+│   ├── checkpoints/           # Best model checkpoints per run
+│   └── images/                # Loss Plots
 │
 ├── training/
 │   ├── checkpoints.py         # Checkpoint saving logic
