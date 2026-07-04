@@ -166,8 +166,8 @@ BETA_VAE_MNIST/
 ## Installation
 
 ```bash
-git clone https://github.com/<your-username>/beta-vae-mnist
-cd beta-vae-mnist
+git clone https://github.com/gladiator-13/VAE_to_Beta_VAE
+cd VAE_to_Beta_VAE
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
