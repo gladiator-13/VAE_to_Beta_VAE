@@ -62,16 +62,16 @@ dim 20 → 32 :   -3.68 val recon  (marginal)
 All visualizations are logged directly to Weights & Biases during training.
 
 **Validation Reconstruction Loss across runs:**
-![Val Reconstruction](outputs/images/val_recon.png)
+![Val Reconstruction](results/val_recon.png)
 
 **Validation KL Divergence across runs:**
-![Val KL](outputs/images/val_kl.png)
+![Val KL](results/val_kl.png)
 
 **Validation Loss across runs:**
-![Val KL](outputs/images/val_loss.png)
+![Val KL](results/val_loss.png)
 
 **2D Latent Space Visualization (latent_dim = 2, β = 1.0)**
-![Latent Space](outputs/images/latent_space.png)
+![Latent Space](results/latent_space.png)
 
 ### Latent Space — With vs Without KL Regularization (latent_dim = 2)
 
