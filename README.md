@@ -7,7 +7,8 @@ Based on three papers read in sequence:
 - Higgins et al. (2017) — *β-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework*
 - Burgess et al. (2018) — *Understanding Disentangling in β-VAE*
 
-📊 **[Full experiment dashboard on Weights & Biases](https://wandb.ai/shantanushinde-aa15-iit/vae-to-beta-vae?nw=nwusershantanushindeaa15)**
+📊 **Experiment tracking:** Weights & Biases 
+(project: `vae-to-beta-vae`)
 
 ---
 
@@ -67,8 +68,6 @@ dim 20 → 32 :   -3.68  (marginal)
 ---
 
 ## Visualizations
-
-📊 Full interactive dashboard: **[Weights & Biases](https://wandb.ai/shantanushinde-aa15-iit/vae-to-beta-vae?nw=nwusershantanushindeaa15)**
 
 All visualizations are logged directly to Weights & Biases during training.
 
