@@ -1,6 +1,7 @@
 from visualization.reconstruction import plot_reconstructions
 from visualization.sampling import plot_random_samples
 from visualization.latent import plot_latent_space
+from visualization.traversal import plot_latent_traversal
 from configs.evaluation_config import  EvaluationConfig
 import torch
 
@@ -53,4 +54,20 @@ class Evaluator:
                     figure=latent_fig,
                     name="latent_space",
                     step=epoch,
+                )
+
+                traversal_fig = plot_latent_traversal(
+                    model=model,
+                    device=device,
+                    latent_range=(
+                        self.config.traversal_min,
+                        self.config.traversal_max
+                        ), 
+                    steps=self.config.traversal_steps
+                )
+
+                self.logger.log_figure(
+                    traversal_fig,
+                    "Latent Traversal",
+                    epoch
                 )

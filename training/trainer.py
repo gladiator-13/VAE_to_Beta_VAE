@@ -4,30 +4,32 @@ from training.losses import vae_loss
 from visualization.reconstruction import plot_reconstructions
 import matplotlib.pyplot as plt
 from training.checkpoints import CheckpointManager
+from configs.model import VAEConfig
 
 class Trainer:
-    def __init__(self, model, train_loader, test_loader, config: TrainingConfig, logger, evaluator) -> None:
+    def __init__(self, model, train_loader, test_loader, training_config: TrainingConfig, logger, evaluator, model_config: VAEConfig) -> None:
         self.model=model
         self.train_loader=train_loader
         self.test_loader=test_loader
-        self.config=config
+        self.training_config=training_config
+        self.model_config=model_config
         self.logger=logger
 
-        self.device=torch.device(config.device)
+        self.device=torch.device(training_config.device)
 
         self.device = torch.device(
-            config.device if torch.cuda.is_available() else "cpu"
+            training_config.device if torch.cuda.is_available() else "cpu"
         )
 
         self.optimizer=torch.optim.Adam(
             self.model.parameters(),
-            lr=config.learning_rate,
-            weight_decay=config.weight_decay
+            lr=training_config.learning_rate,
+            weight_decay=training_config.weight_decay
         )
 
         self.best_val_loss = float("inf")
-        self.checkpoint_manager = CheckpointManager(self.config)
-        self.evaluator=evaluator,
+        self.checkpoint_manager = CheckpointManager(self.training_config, self.model_config)
+        self.evaluator=evaluator
 
     def train_epoch(self):
         self.model.train()
@@ -48,7 +50,7 @@ class Trainer:
                 images,
                 output.mu,
                 output.log_var,
-                beta=self.config.beta
+                beta=self.training_config.beta
             )
 
             loss.backward()
@@ -84,7 +86,7 @@ class Trainer:
                     images,
                     output.mu,
                     output.log_var,
-                    beta=self.config.beta
+                    beta=self.training_config.beta
                 )
 
                 total_loss += loss.item()
@@ -100,7 +102,7 @@ class Trainer:
         }
     
     def train(self):
-        for epoch in range(self.config.epochs):
+        for epoch in range(self.training_config.epochs):
             train_metrics = self.train_epoch()
             val_metrics = self.validate()
 
@@ -127,7 +129,7 @@ class Trainer:
                 step=epoch,
             )
 
-            if (epoch + 1) % self.config.image_log_frequency == 0:
+            if (epoch + 1) % self.training_config.image_log_frequency == 0:
                 self.evaluator.evaluate(
                     model=self.model,
                     dataloader=self.test_loader,
@@ -136,7 +138,7 @@ class Trainer:
                 )
 
             print(
-                f"Epoch {epoch + 1}/{self.config.epochs} | "
+                f"Epoch {epoch + 1}/{self.training_config.epochs} | "
                 f"Train Loss: {train_metrics['loss']:.3f} | "
                 f"Val Loss: {val_metrics['loss']:.3f}"
             )    

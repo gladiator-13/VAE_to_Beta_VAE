@@ -17,7 +17,7 @@ class CheckpointManager:
     def checkpoint_path(self) -> Path:
         """Full path to the checkpoint file."""
         filename = (
-            f"best_model_latent{self.model_config.latent_dim}.pt")
+            f"best_model_latent{self.model_config.latent_dim}.pt")#_beta_{self.training_config.beta}.pt")
             # f"_beta{self.training_config.beta}.pt"
         # )
         return self.checkpoint_dir / filename

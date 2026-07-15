@@ -29,7 +29,7 @@ def plot_latent_space(model, dataloader, device):
         alpha=0.7
     )
 
-    ax.set_title("Latent Space")
+    ax.set_title("Latent Space with Beta=16.0")
     ax.set_xlabel("Latent Dimension 1")
     ax.set_ylabel("Latent Dimension 2")
 

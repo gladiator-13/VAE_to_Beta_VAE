@@ -15,12 +15,16 @@ from configs.wandb import WandBConfig
 from utils.logger import WandBLogger
 from dataclasses import asdict
 
+from configs.evaluation_config import EvaluationConfig
+from evaluation.evaluator import Evaluator
+
 def main():
     # Create configs
     dataset_config = DatasetConfig()
     model_config = VAEConfig()
     training_config = TrainingConfig()
     wandb_config = WandBConfig()
+    evaluation_config = EvaluationConfig()
 
     experiment_config = {
         **asdict(dataset_config),
@@ -31,7 +35,7 @@ def main():
     # Create data module
     data_module = MNISTDataModule(dataset_config)
 
-    # Get train_loader and test_loader
+    # Get test_loader and train loader
     train_loader = data_module.train_dataloader()
     test_loader = data_module.test_dataloader()
 
@@ -46,12 +50,17 @@ def main():
 
     logger.watch_model(model)
 
+    # Evaluator
+    evaluator = Evaluator(logger, evaluation_config)
+
     trainer = Trainer(
         model=model,
         train_loader=train_loader,
         test_loader=test_loader,
-        config=training_config,
-        logger=logger
+        training_config=training_config,
+        logger=logger,
+        evaluator=evaluator,
+        model_config=model_config,
     )
 
     trainer.train()

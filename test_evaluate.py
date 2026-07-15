@@ -45,6 +45,8 @@ def main():
 
     metadata = checkpoint_manager.load(model)
 
+    model.eval()
+
     print(metadata)
 
     experiment_config = {
